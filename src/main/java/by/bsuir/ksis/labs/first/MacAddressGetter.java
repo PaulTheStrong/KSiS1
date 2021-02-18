@@ -1,32 +1,28 @@
 package by.bsuir.ksis.labs.first;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Enumeration;
 
 public class MacAddressGetter {
 
-    public static String getMacAddress(InetAddress address) throws SocketException {
-        NetworkInterface ni = NetworkInterface.getByInetAddress(address);
-        if (ni != null) {
-            byte[] hardwareAddress = ni.getHardwareAddress();
-            String[] hexadecimal = new String[hardwareAddress.length];
-            for (int i = 0; i < hardwareAddress.length; i++) {
-                hexadecimal[i] = String.format("%02X", hardwareAddress[i]);
+    public static void printMacAddress(InetAddress address) throws IOException {
+        Enumeration<NetworkInterface> ni = NetworkInterface.getNetworkInterfaces();
+        while (ni.hasMoreElements()) {
+            byte[] ha = ni.nextElement().getHardwareAddress();
+            if (ha != null) {
+                System.out.printf("%02x-%02x-%02x-%02x-%02x-%02x\n",
+                            ha[0], ha[1], ha[2], ha[3], ha[4], ha[5]);
+
             }
-            return String.join(":", hexadecimal);
         }
-        return "No mac";
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println(getMacAddress(InetAddress.getLocalHost()));
-        System.out.println(InetAddress.getLocalHost().isReachable(3000));
-        //getAllMacAddressesInNetwork();
-        //System.out.println(Arrays.toString(InetAddress.getAllByName("localhost")));
     }
 }
